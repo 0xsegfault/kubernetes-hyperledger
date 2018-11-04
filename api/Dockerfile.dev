@@ -1,0 +1,9 @@
+FROM golang
+
+RUN mkdir -p /go/src/github.com/0xsegfault/kubernetes-hyperledger/api
+WORKDIR /go/src/github.com/0xsegfault/kubernetes-hyperledger/api
+COPY . .
+RUN make install
+RUN go build -o bin/api main.go
+
+CMD ["/go/src/github.com/0xsegfault/kubernetes-hyperledger/api/bin/api"]
