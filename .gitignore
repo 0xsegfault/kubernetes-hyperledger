@@ -1,5 +1,6 @@
 **/node_modules
 **/vendor
-**/bin
 **/dist
 **/crypto-config
+
+api/bin
