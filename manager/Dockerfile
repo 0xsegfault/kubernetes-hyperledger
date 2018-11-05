@@ -1,8 +1,8 @@
-FROM nginx
-
-RUN apt update -y
-RUN apt install emacs curl git -y
-
+FROM ubuntu AS builder
 WORKDIR /app
+COPY ./ ./
+RUN chmod +x ./setup.sh
+RUN ./setup.sh
 
-COPY ./setup.sh ./setup.sh
+FROM nginx
+COPY --from=builder /app /app

@@ -1,6 +1,8 @@
-FROM nginx
-
+FROM ubuntu AS builder
 WORKDIR /app
 COPY ./ ./
+RUN chmod +x ./setup.sh
+RUN ./setup.sh
 
-# RUN /app/bin/cryptogen generate --config /app/crypto-config.yaml
+FROM nginx
+COPY --from=builder /app /app

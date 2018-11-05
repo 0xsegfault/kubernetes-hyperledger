@@ -1,5 +1,8 @@
 #!/bin/bash
 
+apt update -y
+apt install emacs curl git -y
+
 curl https://raw.githubusercontent.com/0xsegfault/kubernetes-hyperledger/master/configtx.yaml > /app/configtx.yaml
 curl https://raw.githubusercontent.com/0xsegfault/kubernetes-hyperledger/master/crypto-config.yaml > /app/crypto-config.yaml
 curl -sSL http://bit.ly/2ysbOFE | bash -s 1.3.0
