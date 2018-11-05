@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin-ca-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: admin-ca
+  template:
+    metadata:
+      labels:
+        component: admin-ca
+    spec:
+      volumes:
+        - name: admin-ca-storage
+          persistentVolumeClaim:
+            claimName: certs-persistent-volume-claim
+      restartPolicy: Always
+      containers:
+        - name: admin-ca
+          image: hyperledger/fabric-ca:1.3.0
+          workingDir: /etc/hyperledger/fabric-ca-server
+          ports:
+            - containerPort: 7054
+          volumeMounts:
+          - mountPath: /etc/hyperledger
+            name: admin-ca-storage
+          env:
+            - name: FABRIC_CA_HOME
+              value: "/etc/hyperledger/fabric-ca-server"
+            - name: FABRIC_CA_SERVER_CA_NAME
+              value: "admin.ca"
+          command: ["/bin/sh"]
+          # args: ["$(MESSAGE)"] - hide the password later
+          args: ["-c","fabric-ca-server start -b admin:adminpw --tls.enabled --csr.hosts admin-ca-service"]

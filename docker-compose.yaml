@@ -1,5 +1,8 @@
 version: "3"
 
+networks:
+  segfault:
+
 services:
 
   api:
@@ -15,3 +18,131 @@ services:
       dockerfile: Dockerfile.dev
     ports:
       - "8080:8080"
+
+
+
+  zoo1:
+    container_name: zoo1
+    image: hyperledger/fabric-zookeeper:0.4.14
+    restart: always
+    ports:
+      - '2181'
+      - '2888'
+      - '3888'
+    environment:
+      - ZOO_MY_ID=1
+      - ZOO_SERVERS=server.1=0.0.0.0:2888:3888 server.2=zoo2:2888:3888 server.3=zoo3:2888:3888
+    networks:
+      - segfault
+
+  zoo2:
+    container_name: zoo2
+    image: hyperledger/fabric-zookeeper:0.4.14
+    restart: always
+    ports:
+      - '2181'
+      - '2888'
+      - '3888'
+    environment:
+      - ZOO_MY_ID=2
+      - ZOO_SERVERS=server.1=zoo1:2888:3888 server.2=0.0.0.0:2888:3888 server.3=zoo3:2888:3888
+    networks:
+      - segfault
+
+  zoo3:
+    container_name: zoo3
+    image: hyperledger/fabric-zookeeper:0.4.14
+    restart: always
+    ports:
+      - '2181'
+      - '2888'
+      - '3888'
+    environment:
+      - ZOO_MY_ID=3
+      - ZOO_SERVERS=server.1=zoo1:2888:3888 server.2=zoo2:2888:3888 server.3=0.0.0.0:2888:3888
+    networks:
+      - segfault
+
+  kafka1:
+    container_name: kafka1
+    image: hyperledger/fabric-kafka:0.4.14
+    restart: always
+    environment:
+      - KAFKA_MESSAGE_MAX_BYTES=103809024
+      - KAFKA_REPLICA_FETCH_MAX_BYTES=103809024
+      - KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE=false
+      - KAFKA_BROKER_ID=1
+      - KAFKA_MIN_INSYNC_REPLICAS=2
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=3
+      - KAFKA_ZOOKEEPER_CONNECT=zoo1:2181,zoo2:2181,zoo3:2181
+    ports:
+      - 9092:9092
+    depends_on:
+      - zoo1
+      - zoo2
+      - zoo3
+    networks:
+      - segfault
+
+  kafka2:
+    container_name: kafka2
+    image: hyperledger/fabric-kafka:0.4.14
+    restart: always
+    environment:
+      - KAFKA_MESSAGE_MAX_BYTES=103809024
+      - KAFKA_REPLICA_FETCH_MAX_BYTES=103809024
+      - KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE=false
+      - KAFKA_BROKER_ID=2
+      - KAFKA_MIN_INSYNC_REPLICAS=2
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=3
+      - KAFKA_ZOOKEEPER_CONNECT=zoo1:2181,zoo2:2181,zoo3:2181
+    ports:
+      - 10092:9092
+    depends_on:
+      - zoo1
+      - zoo2
+      - zoo3
+    networks:
+      - segfault
+
+  kafka3:
+    container_name: kafka3
+    image: hyperledger/fabric-kafka:0.4.14
+    restart: always
+    environment:
+      - KAFKA_MESSAGE_MAX_BYTES=103809024
+      - KAFKA_REPLICA_FETCH_MAX_BYTES=103809024
+      - KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE=false
+      - KAFKA_BROKER_ID=3
+      - KAFKA_MIN_INSYNC_REPLICAS=2
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=3
+      - KAFKA_ZOOKEEPER_CONNECT=zoo1:2181,zoo2:2181,zoo3:2181
+    ports:
+      - 11092:9092
+    depends_on:
+      - zoo1
+      - zoo2
+      - zoo3
+    networks:
+      - segfault
+
+  kafka4:
+    container_name: kafka4
+    image: hyperledger/fabric-kafka:0.4.14
+    restart: always
+    environment:
+      - KAFKA_MESSAGE_MAX_BYTES=103809024
+      - KAFKA_REPLICA_FETCH_MAX_BYTES=103809024
+      - KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE=false
+      - KAFKA_BROKER_ID=4
+      - KAFKA_MIN_INSYNC_REPLICAS=2
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=3
+      - KAFKA_ZOOKEEPER_CONNECT=zoo1:2181,zoo2:2181,zoo3:2181
+    ports:
+      - 12092:9092
+    depends_on:
+      - zoo1
+      - zoo2
+      - zoo3
+    networks:
+      - segfault

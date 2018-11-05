@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zoo1-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: zoo1
+  template:
+    metadata:
+      labels:
+        component: zoo1
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: zoo1
+          image: hyperledger/fabric-zookeeper:0.4.14
+          ports:
+            - containerPort: 2181
+              name: "operating"
+            - containerPort: 2888
+              name: "service"
+            - containerPort: 3888
+              name: "transmission"
+          env:
+            - name: ZOO_MY_ID
+              value: "1"
+            - name: ZOO_SERVERS
+              value: "server.1=0.0.0.0:2888:3888 server.2=zoo2-service:2888:3888 server.3=zoo3-service:2888:3888 server.4=zoo4-service:2888:3888 server.5=zoo5-service:2888:3888"

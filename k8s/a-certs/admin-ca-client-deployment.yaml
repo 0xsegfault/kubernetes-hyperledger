@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin-ca-client-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: admin-ca-client
+  template:
+    metadata:
+      labels:
+        component: admin-ca-client
+    spec:
+      volumes:
+        - name: admin-ca-storage
+          persistentVolumeClaim:
+            claimName: certs-persistent-volume-claim
+      restartPolicy: Always
+      containers:
+        - name: admin-ca-client
+          image: hyperledger/fabric-ca:1.3.0
+          workingDir: /etc/hyperledger/fabric-ca-client
+          volumeMounts:
+          - mountPath: /etc/hyperledger
+            name: admin-ca-storage
+          env:
+            - name: FABRIC_CA_HOME
+              value: "/etc/hyperledger/fabric-ca-client"
+            - name: CORE_VM_ENDPOINT
+              value: unix:///host/var/run/docker.sock
+          command: ["/bin/sh"]
+          args: ["-c","sleep 10;fabric-ca-client enroll -u https://admin:adminpw@admin-ca-service:7054 --tls.certfiles /etc/hyperledger/fabric-ca-server/tls-cert.pem;sleep 10000"]
