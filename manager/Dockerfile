@@ -1,6 +1,6 @@
-FROM ubuntu:16.04
+FROM nginx
 
 WORKDIR /app
 COPY ./ ./
 
-CMD ["cryptogen","generate","--config crypto-config.yaml"]
+RUN /app/bin/cryptogen generate --config /app/crypto-config.yaml
