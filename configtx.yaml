@@ -137,6 +137,8 @@ Application: &ApplicationDefaults
 
 Profiles:
   OrdererGenesis:
+    Capabilities:
+      <<: *ChannelCapabilities
     Orderer:
       <<: *OrdererDefaults
       Organizations:
