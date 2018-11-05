@@ -1,6 +1,7 @@
 FROM nginx
 
 WORKDIR /app
-COPY ./ ./
+RUN mkdir -p /app/bin
+COPY . .
 
-RUN /app/bin/cryptogen generate --config /app/crypto-config.yaml
+# RUN /app/bin/cryptogen generate --config /app/crypto-config.yaml

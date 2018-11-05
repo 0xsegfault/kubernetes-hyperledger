@@ -32,4 +32,4 @@ spec:
             - name: KAFKA_DEFAULT_REPLICATION_FACTOR
               value: "3"
             - name: KAFKA_ZOOKEEPER_CONNECT
-              value: "zoo1-service:2181,zoo2-service:2181,zoo3-service:2181,zoo4-service:2181,zoo5-service:2181"
+              value: "zoo1-service:2181,zoo2-service:2181,zoo3-service:2181"

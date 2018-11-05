@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orderer1-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: orderer1
+  template:
+    metadata:
+      labels:
+        component: orderer1
+    spec:
+      volumes:
+        - name: orderers-state-storage
+          persistentVolumeClaim:
+            claimName: orderers-state-persistent-claim
+      restartPolicy: Always
+      containers:
+        - name: orderer1
+          image: hyperledger/fabric-orderer:1.3.0
+          ports:
+            - containerPort: 7050
+          workingDir: "/opt/gopath/src/github.com/hyperledger/fabric"
+          command: ["orderer"]
+          volumeMounts:
+            - mountPath: /var/hyperledger/production/orderer
+              name: orderers-state-storage
+              subPath: "orderer1"
+          env:
+            - name: ORDERER_GENERAL_LOGLEVEL
+              value: "debug"
+            - name: ORDERER_GENERAL_LISTENADDRESS
+              value: "0.0.0.0"
+            - name: ORDERER_GENERAL_GENESISMETHOD
+              value: "file"
+            - name: ORDERER_GENERAL_GENESISFILE
+              value: "/var/hyperledger/orderer/orderer.genesis.block"
+            - name: ORDERER_GENERAL_LOCALMSPID
+              value: "OrdererMSP"
+            - name: ORDERER_GENERAL_LOCALMSPDIR
+              value: "/var/hyperledger/orderer/msp"
+            - name: ORDERER_GENERAL_TLS_ENABLED
+              value: "true"
+            - name: ORDERER_GENERAL_TLS_PRIVATEKEY
+              value: "/var/hyperledger/orderer/tls/server.key"
+            - name: ORDERER_GENERAL_TLS_CERTIFICATE
+              value: "/var/hyperledger/orderer/tls/server.crt"
+            - name: ORDERER_GENERAL_TLS_ROOTCAS
+              value: "[/var/hyperledger/orderer/tls/ca.crt]"
+            - name: ORDERER_KAFKA_RETRY_SHORTINTERVAL
+              value: "1s"
+            - name: ORDERER_KAFKA_RETRY_SHORTTOTAL
+              value: "30s"
+            - name: ORDERER_KAFKA_VERBOSE
+              value: "true"

@@ -16,6 +16,9 @@ spec:
         - name: admin-ca-storage
           persistentVolumeClaim:
             claimName: certs-persistent-volume-claim
+        - name: manager-storage
+          persistentVolumeClaim:
+            claimName: crypto-persistent-volume-claim
       restartPolicy: Always
       containers:
         - name: manager
@@ -24,3 +27,5 @@ spec:
           volumeMounts:
           - mountPath: /etc/hyperledger
             name: admin-ca-storage
+          - mountPath: /app
+            name: manager-storage
