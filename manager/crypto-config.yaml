@@ -1,0 +1,7 @@
+OrdererOrgs:
+  - Name: Orderer
+    Domain: segfault.com
+    Specs:
+      - Hostname: orderer
+    Template:
+      Count: 3

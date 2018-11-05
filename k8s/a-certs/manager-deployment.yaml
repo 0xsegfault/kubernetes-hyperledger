@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: manager-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: manager
+  template:
+    metadata:
+      labels:
+        component: manager
+    spec:
+      volumes:
+        - name: admin-ca-storage
+          persistentVolumeClaim:
+            claimName: certs-persistent-volume-claim
+      restartPolicy: Always
+      containers:
+        - name: manager
+          image: 0xsegfault/manager
+          workingDir: /app
+          volumeMounts:
+          - mountPath: /etc/hyperledger
+            name: admin-ca-storage

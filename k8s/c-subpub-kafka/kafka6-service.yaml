@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka6-service
+spec:
+  type: ClusterIP
+  selector:
+    component: kafka6
+  ports:
+    - port: 9092
+      targetPort: 9092
