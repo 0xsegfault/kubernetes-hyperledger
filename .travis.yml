@@ -2,9 +2,15 @@ sudo: required
 services:
     - docker
 
-after_success:
-    - docker build -t 0xsegfault/client ./client
-    - docker build -t 0xsegfault/manager ./manager
+env:
+    global:
+        - SHA=$(git rev-parse HEAD)
+
+before_install:
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-    - docker push 0xsegfault/client
-    - docker push 0xsegfault/manager
+
+deploy:
+    provider: script
+    script: bash ./deploy.sh
+    on:
+        branch: master
