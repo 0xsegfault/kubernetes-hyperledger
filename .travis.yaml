@@ -2,5 +2,9 @@ sudo: required
 services:
     - docker
 
-before_install:
+after_success:
+    - docker build -t 0xsegfault/client ./client
+    - docker build -t 0xsegfault/manager ./manager
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    - docker push 0xsegfault/client
+    - docker push 0xsegfault/manager
