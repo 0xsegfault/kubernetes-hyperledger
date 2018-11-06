@@ -23,7 +23,7 @@ spec:
       containers:
         - name: manager
           image: 0xsegfault/manager
-          workingDir: /storage
+          workingDir: /app
           volumeMounts:
           - mountPath: /etc/hyperledger
             name: admin-ca-storage
