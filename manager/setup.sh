@@ -1,21 +1,26 @@
 #!/bin/bash
 
 apt update -y
-apt install emacs curl git -y
+apt install curl -y
 
 curl https://raw.githubusercontent.com/0xsegfault/kubernetes-hyperledger/master/configtx.yaml > /app/configtx.yaml
 curl https://raw.githubusercontent.com/0xsegfault/kubernetes-hyperledger/master/crypto-config.yaml > /app/crypto-config.yaml
-curl -sSL http://bit.ly/2ysbOFE | bash -s 1.3.0
+curl https://raw.githubusercontent.com/0xsegfault/kubernetes-hyperledger/master/bin/cryptogen > /app/cryptogen
+curl https://raw.githubusercontent.com/0xsegfault/kubernetes-hyperledger/master/bin/configtxgen > /app/configtxgen
 
-mkdir /app/orderer
-mkdir /app/channels
+chmod +x /app/cryptogen
+chmod +x /app/configtxgen
 
-./fabric-samples/bin/cryptogen generate --config crypto-config.yaml
-./fabric-samples/bin/configtxgen -profile OrdererGenesis -outputBlock ./orderer/orderer.genesis.block
+mkdir -p /app/orderer
+mkdir -p /app/channels
+mkdir -p /storage
 
-./fabric-samples/bin/configtxgen -profile MainChannel -outputAnchorPeersUpdate ./channels/mainchannelorg1anchor.tx -channelID mainchannel -asOrg Org1MSP
-./fabric-samples/bin/configtxgen -profile MainChannel -outputAnchorPeersUpdate ./channels/mainchannelorg2anchor.tx -channelID mainchannel -asOrg Org2MSP
-./fabric-samples/bin/configtxgen -profile MainChannel -outputAnchorPeersUpdate ./channels/mainchannelorg3anchor.tx -channelID mainchannel -asOrg Org3MSP
+./cryptogen generate --config crypto-config.yaml
+./configtxgen -profile OrdererGenesis -outputBlock ./orderer/orderer.genesis.block
+
+./configtxgen -profile MainChannel -outputAnchorPeersUpdate ./channels/mainchannelorg1anchor.tx -channelID mainchannel -asOrg Org1MSP
+./configtxgen -profile MainChannel -outputAnchorPeersUpdate ./channels/mainchannelorg2anchor.tx -channelID mainchannel -asOrg Org2MSP
+./configtxgen -profile MainChannel -outputAnchorPeersUpdate ./channels/mainchannelorg3anchor.tx -channelID mainchannel -asOrg Org3MSP
 
 cp ./orderer/orderer.genesis.block crypto-config/ordererOrganizations/segfault.com/orderers/orderer0.segfault.com
 cp ./orderer/orderer.genesis.block crypto-config/ordererOrganizations/segfault.com/orderers/orderer1.segfault.com
