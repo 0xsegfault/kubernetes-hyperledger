@@ -8,6 +8,10 @@ env:
 
 before_install:
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    - docker build -t 0xsegfault/client-test -f ./client/Dockerfile.dev .
+
+script:
+    - docker run 0xsegfault/client npm run lint
 
 deploy:
     provider: script
