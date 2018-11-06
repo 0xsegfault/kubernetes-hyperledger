@@ -27,6 +27,9 @@ Profiles:
             Capabilities:
                 <<: *ApplicationCapabilities
 
+
+
+
 Organizations:
 
     - &OrdererOrg
