@@ -33,7 +33,7 @@ spec:
               subPath: "orderer2"
             - mountPath: /var/hyperledger/orderer
               name: manager-storage
-              subPath: manager/orderer2
+              subPath: manager/orderer1.segfault.com
           env:
             - name: ORDERER_GENERAL_LOGLEVEL
               value: "debug"
