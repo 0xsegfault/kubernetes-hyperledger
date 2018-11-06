@@ -2,11 +2,6 @@ sudo: required
 services:
     - docker
 
-language: go
-
-go:
-  - "1.11.x"
-
 env:
     global:
         - SHA=$(git rev-parse HEAD)
@@ -19,8 +14,6 @@ script:
 
 after_success:
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-    - ./api/scripts/install.sh
-    - CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o api/bin/api api/main.go
 
 deploy:
     provider: script
